@@ -35,7 +35,7 @@
 </head>
 <body>
 <div class="container">
-<div style="text-align: center" class="alert alert-danger"><h1> Парсинг новостных сайтов</h1></div>
+<div style="text-align: center" class="alert alert-success"><h1> Парсинг новостных сайтов</h1></div>
 
     <?php
     require_once "libs/db.php";
@@ -46,9 +46,6 @@
         echo '</div>';
         echo "<p class='active'>";
 
-       /* $res_replace = str_replace('росреестр', '<b>росреестр</b>', $result['text']);
-        $res_replace = str_replace('кадастр', '<b>кадастр</b>', $result['text']);
-        $res_replace = str_replace('Гришин', '<b>Гришин</b>', $result['text']);*/
 
 
         $res_replace = preg_replace("~($text)~i", '<b>\1</b>', $result['text']);

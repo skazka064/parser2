@@ -4,12 +4,11 @@ require_once "libs/curl_query.php";
 require_once  "libs/pattern.php";
 require_once "libs/db.php";
 exec('chcp 65001');
-
-$url ="http://saratovdaily.ru/news";
+$url ="https://saratov.versia.ru";
 $pattern = "~" . $text . "~si";
 function parser_a($url){
     $obj[]=null;
-     $html = phpQuery::newDocument(curl_get($url));
+    $html = phpQuery::newDocument(curl_get($url));
     foreach ($html->find("a") as $value){
         $a = pq($value)->attr("href");
 
@@ -23,10 +22,9 @@ function parser_a($url){
 function parser_p($url){
     $html = phpQuery::newDocument(curl_get($url));
 
-    foreach ($html->find(".clearfix") as $value){
+    foreach ($html->find(".copyclip") as $value){
         $obj = pq($value);
-        $text = $obj-> find("article")->text()."<br>"."<br>";
-
+        $text = $obj-> find("p")->text()."<br>"."<br>";
     }
     return $text;
 }
@@ -36,14 +34,18 @@ $links= parser_a($url);
 /*echo "<pre>";
 print_r($links);*/
 
-
 foreach ($links as $link){
-    if (preg_match("~/news/20[1234567890]{2,2}/~siU",$link)) {
-        $value= "http://saratovdaily.ru".$link;
+    if (preg_match("~/~siU",$link)) {
+        $value= "https://saratov.versia.ru".$link;
         $content = parser_p($value);
-        echo $value."<br>";
-
-
+        if (preg_match($pattern, $content)&& !in_array($value, $outs) && !in_array($value, $ahref)){
+            $outs[] = $value;
+            $date = date('d.m.Y H:i:s');
+            $sql = "INSERT INTO p_table(date,ahref,text) VALUES('$date','$value','$content')";
+            $res = $db->exec($sql);
+            echo $value."<br>";
+            echo $content."<br>";
+        }
     }
 }
 ?>

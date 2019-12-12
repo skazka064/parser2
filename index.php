@@ -26,10 +26,8 @@
          $(this).next().slideToggle();
          $(this).toggleClass('active');
      });
-
  });
 </script>
-
 
     <title>Document</title>
 </head>
@@ -40,16 +38,20 @@
     <?php
     require_once "libs/db.php";
     require_once "libs/pattern.php";
+
+     $dir= __DIR__;
+    $scandir= scandir($dir);
+     $implode = implode(" ",$scandir);
+     echo "<div class='alert alert-secondary'>";
+     echo "<h4>Сайты в работе:</h4>";
+     echo$preg = preg_replace("~[.]php|README[.]md|[.]git|[.]|index[.]php|libs|img|css~siU"," ",$implode);
+     echo "</div>";
     foreach ($results as $result ){
         echo'<div class="alert alert-primary ">';
         echo $result['date']." ".$result['ahref']."<br>";
         echo '</div>';
         echo "<p class='active'>";
-
-
-
         $res_replace = preg_replace("~($text)~i", '<b>\1</b>', $result['text']);
-
         echo $res_replace."<br>";
         echo "</p>";
 

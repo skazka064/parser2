@@ -33,7 +33,7 @@
 </head>
 <body>
 <div class="container">
-<div style="text-align: center" class="alert alert-success"><h1> Парсинг новостных сайтов</h1></div>
+<div style="text-align: center" class="alert alert-success"><h3> Парсинг новостных сайтов</h3></div>
 
     <?php
     require_once "libs/db.php";
@@ -43,9 +43,16 @@
     $scandir= scandir($dir);
      $implode = implode(" ",$scandir);
      echo "<div class='alert alert-secondary'>";
-     echo "<h4>Сайты в работе:</h4>";
+     echo "<h5>Сайты в работе:</h5>";
      echo$preg = preg_replace("~[.]php|README[.]md|[.]git|[.]|index[.]php|libs|img|css~siU"," ",$implode);
+     echo "<h5>Ключевые слова:</h5>";
+
+     echo preg_replace('~[|]~',', ',$text);
      echo "</div>";
+
+
+
+
     foreach ($results as $result ){
         echo'<div class="alert alert-primary ">';
         echo $result['date']." ".$result['ahref']."<br>";

@@ -3,8 +3,8 @@ require_once "libs/phpQuery.php";
 require_once "libs/curl_query.php";
 require_once  "libs/pattern.php";
 require_once "libs/db.php";
- exec('chcp 65001');
-$url ="http://izvestia64.ru";
+exec('chcp 65001');
+$url ="http://www.mfc64.ru/novosti";
 $pattern = "~" . $text . "~si";
 function parser_a($url){
     $obj[]=null;
@@ -23,7 +23,9 @@ function parser_a($url){
 function parser_p($url){
     $html = phpQuery::newDocument(curl_get($url));
     foreach ($html as $value){
-        $text = htmlspecialchars(pq($value)->find("div.text")->text());
+        $t = (pq($value)->find("div.item-page.ip"));
+        $text=(pq($t)->find("p")->text());
+
     }
     return $text;
 }
@@ -33,17 +35,18 @@ $links= parser_a($url);
 print_r($links);*/
 
 foreach ($links as $link){
-    if (preg_match("~html$~siU",$link)) {
-        $value= $link;
+    if (preg_match("~^[/]~siU",$link)) {
+        $value= "http://www.mfc64.ru/novosti".$link;
         $content = parser_p($value);
         if (preg_match($pattern, $content)&& !in_array($value, $outs) && !in_array($value, $ahref)){
             $outs[] = $value;
             $date = date('d.m.Y H:i:s');
             $sql = "INSERT INTO p_table(date,ahref,text) VALUES('$date','$value','$content')";
             $res = $db->exec($sql);
-            /*echo $value."<br>";
+           /* echo $value."<br>";
             echo $content."<br>";*/
         }
     }
 }
+phpQuery::unloadDocuments();
 ?>

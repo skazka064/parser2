@@ -33,17 +33,20 @@
 </head>
 <body>
 <div class="container">
-<div style="text-align: center" class="alert alert-success"><h3> Парсинг новостных сайтов</h3></div>
+<div style="text-align: center" class="alert alert-info"><h3> Парсинг новостных сайтов</h3> <a href="http://10.64.143.29/statistica/">Выход</a></div>
 
     <?php
     require_once "libs/db.php";
     require_once "libs/pattern.php";
+    require_once "libs/array.php";
 
      $dir= __DIR__;
     $scandir= scandir($dir);
      $implode = implode(" ",$scandir);
-     echo "<div class='alert alert-secondary'>";
-     echo "<h5>Сайты в работе:</h5>";
+     $count_array= count($array);
+     $count = count($scandir)-8;
+     echo "<div class='alert alert-warning'>";
+     echo "<h5>Сайтов в работе ".$count.", всего ".$count_array."  :</h5>";
      echo$preg = preg_replace("~[.]php|README[.]md|[.]git|[.]|index[.]php|libs|img|css~siU"," ",$implode);
      echo "<h5>Ключевые слова:</h5>";
 
@@ -54,7 +57,7 @@
 
 
     foreach ($results as $result ){
-        echo'<div class="alert alert-primary ">';
+        echo'<div class="alert alert-success ">';
         echo $result['date']." ".$result['ahref']."<br>";
         echo '</div>';
         echo "<p class='active'>";

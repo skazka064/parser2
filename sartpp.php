@@ -39,8 +39,8 @@ echo "<pre>";
 print_r($links);
 
 foreach ($links as $link){
-    if (preg_match("~^http~siU",$link)) {
-        $value= $link;
+    if (preg_match("~^[/]~siU",$link)) {
+        $value= "http://sartpp.ru".$link;
         echo $value."<br>";
         $content = parser_p($value);
         if (preg_match($pattern, $content)&& !in_array($value, $outs) && !in_array($value, $ahref)){

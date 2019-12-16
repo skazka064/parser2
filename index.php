@@ -47,10 +47,15 @@
      $count = count($scandir)-8;
      echo "<div class='alert alert-warning'>";
      echo "<h5>Сайтов в работе ".$count.", всего ".$count_array."  :</h5>";
+     echo "<div style='font-size: 14px'>";
      echo$preg = preg_replace("~[.]php|README[.]md|[.]git|[.]|index[.]php|libs|img|css~siU"," ",$implode);
+     echo "</div>";
+
      echo "<h5>Ключевые слова:</h5>";
 
+    echo "<div style='font-size: 14px'>";
      echo preg_replace('~[|]~',', ',$text);
+     echo "</div>";
      echo "</div>";
 
 

@@ -53,4 +53,5 @@ foreach ($links as $link){
         }
     }
 }
+phpQuery::unloadDocuments();
 ?>

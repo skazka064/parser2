@@ -4,7 +4,7 @@ require_once "libs/curl_query.php";
 require_once  "libs/pattern.php";
 require_once "libs/db.php";
 exec('chcp 65001');
-$url ="http://www.saratovmer.ru";
+$url ="http://www.engels.me";
 $pattern = "~" . $text . "~si";
 function parser_a($url){
     $obj[]=null;
@@ -23,18 +23,20 @@ function parser_a($url){
 function parser_p($url){
     $html = phpQuery::newDocument(curl_get($url));
     foreach ($html as $value){
-        $text = htmlspecialchars(pq($value)->find("div.news-content")->text());
+        $text = htmlspecialchars(pq($value)->find("p")->text());
     }
     return $text;
 }
+
 $links= parser_a($url);
 
 echo "<pre>";
 print_r($links);
 
 foreach ($links as $link){
-    if (preg_match("~/news/~siU",$link)) {
-        $value= "http://www.saratovmer.ru".$link;
+    if (preg_match("~^[/]~siU",$link)) {
+        $value= "http://www.engels.me".$link;
+        echo $value."<br>";
         $content = parser_p($value);
         if (preg_match($pattern, $content)&& !in_array($value, $outs) && !in_array($value, $ahref)){
             $outs[] = $value;
@@ -45,7 +47,21 @@ foreach ($links as $link){
             echo $content."<br>";
         }
     }
+
+    if (preg_match("~^http~siU",$link)) {
+        $value= $link;
+        echo $value."<br>";
+        $content = parser_p($value);
+        if (preg_match($pattern, $content)&& !in_array($value, $outs) && !in_array($value, $ahref)){
+            $outs[] = $value;
+            $date = date('d.m.Y H:i:s');
+            $sql = "INSERT INTO p_table(date,ahref,text) VALUES('$date','$value','$content')";
+            $res = $db->exec($sql);
+            echo $value."<br>";
+            echo $content."<br>";
+        }
+    }
+
 }
 phpQuery::unloadDocuments();
-
 ?>

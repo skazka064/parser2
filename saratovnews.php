@@ -54,4 +54,6 @@ foreach ($links as $link){
 }
 /*echo "<pre>";
 print_r($ahref);*/
+phpQuery::unloadDocuments();
+
 ?>

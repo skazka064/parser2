@@ -52,4 +52,5 @@ foreach ($links as $link){
         echo $content."<br>";*/
     }
     }
+phpQuery::unloadDocuments();
 ?>

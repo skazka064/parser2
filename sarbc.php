@@ -41,4 +41,6 @@ foreach ($arr as $value){
         }
     }
 }
+phpQuery::unloadDocuments();
+
 ?>

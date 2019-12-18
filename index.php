@@ -36,9 +36,44 @@
 <div style="text-align: center" class="alert alert-info"><h3> Парсинг новостных сайтов</h3> <a href="http://10.64.143.29/statistica/">Выход</a></div>
 
     <?php
-    require_once "libs/db.php";
+
     require_once "libs/pattern.php";
     require_once "libs/array.php";
+    $host = 'localhost'; // хост
+    $dbname = 'parser'; // название базы
+    $user = "root"; // логин пользователя
+    $pass = ''; // пароль
+    $db = new PDO("mysql:host=$host;dbname=$dbname", $user, $pass);
+    // Переменная хранит число сообщений выводимых на станице
+    $num = 5;
+    // Извлекаем из URL текущую страницу
+    $page = $_GET['page'];
+    // Определяем общее число сообщений в базе данных
+    $sth = $db->prepare("SELECT count(*) c FROM p_table ");
+    $sth->execute();
+    $catalogCount = $sth->fetchAll(PDO::FETCH_ASSOC);
+
+    $catalogCount[0]['c'];
+    // Находим общее число страниц
+    $total = intval(($catalogCount[0]['c'] - 1) / $num) + 1;
+
+    // Определяем начало сообщений для текущей страницы
+    $page = intval($page);
+    // Если значение $page меньше единицы или отрицательно
+    // переходим на первую страницу
+    // А если слишком большое, то переходим на последнюю
+    if(empty($page) or $page < 0) $page = 1;
+    if($page > $total) $page = $total;
+    // Вычисляем начиная к какого номера
+    // следует выводить сообщения
+     $start = $page * $num - $num;
+
+    $finish=$start+$num;
+    // Выбираем $num сообщений начиная с номера $start
+    $sth = $db->prepare("SELECT * FROM p_table where id>$start and id<=$finish ORDER BY id");
+    $sth->execute();
+    $results= $sth->fetchAll(PDO::FETCH_ASSOC);
+
 
      $dir= __DIR__;
     $scandir= scandir($dir);
@@ -73,10 +108,30 @@
 
     }
     ?>
-    <div class="alert alert-secondary">
-        <a href="http://10.64.143.29/statistica/">Выход</a>
-    </div>
-</div>
 
+
+<?php
+// Проверяем нужны ли стрелки назад
+if ($page != 1) $pervpage = '<a href= ./index.php?page=1><<</a>
+<a href= ./index.php?page='. ($page - 1) .'><</a> ';
+// Проверяем нужны ли стрелки вперед
+if ($page != $total) $nextpage = ' <a href= ./index.php?page='. ($page + 1) .'>></a>
+<a href= ./index.php?page=' .$total. '>>></a>';
+
+// Находим две ближайшие станицы с обоих краев, если они есть
+if($page - 2 > 0) $page2left = ' <a href= ./index.php?page='. ($page - 2) .'>'. ($page - 2) .'</a> | ';
+if($page - 1 > 0) $page1left = '<a href= ./index.php?page='. ($page - 1) .'>'. ($page - 1) .'</a> | ';
+if($page + 2 <= $total) $page2right = ' | <a href= ./index.php?page='. ($page + 2) .'>'. ($page + 2) .'</a>';
+if($page + 1 <= $total) $page1right = ' | <a href= ./index.php?page='. ($page + 1) .'>'. ($page + 1) .'</a>';
+
+// Вывод меню
+
+echo "<div style='text-align: center' class='alert alert-dark'>";
+      echo $pervpage.$page2left.$page1left.'<b>'.$page.'</b>'.$page1right.$page2right.$nextpage;
+
+      echo "</div>";
+      ?>
+
+</div>
 </body>
 </html>
